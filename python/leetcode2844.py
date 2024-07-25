@@ -1,37 +1,16 @@
 class Solution:
     def minimumOperations(self, num: str) -> int:
         n = len(num)
-        min_ops = float('inf')
-
-        # 查找以 tail 结尾的最小操作数
-        def find_ops(tail: str) -> int:
-            second_char_found = False
-            first_char_index = -1
-
-            for i in range(n-1, -1, -1):
-                if second_char_found:
-                    if num[i] == tail[0]:
-                        first_char_index = i
-                        break
-                else:
-                    if num[i] == tail[1]:
-                        second_char_found = True
-            
-            if first_char_index == -1:
-                return float('inf')  # 如果没有找到匹配的字符对，返回无限大
-            
-            return n - first_char_index - 2
-
-        # 考虑所有可能的尾部字符对
-        tails = ["00", "25", "50", "75"]
-        for tail in tails:
-            min_ops = min(min_ops, find_ops(tail))
-        
-        # 考虑只有一个零的情况
-        if '0' in num:
-            min_ops = min(min_ops, n - 1)
-
-        return min_ops
+        found0 = found5 = False  # 初始化标志
+        for i in range(n - 1, -1, -1):  # 从右向左遍历字符串
+            c = num[i]
+            if found0 and c in "05" or found5 and c in "27":  # 如果找到匹配的字符对
+                return n - i - 2  # 返回需要删除的字符数
+            if c == '0':  # 如果找到 '0'
+                found0 = True
+            elif c == '5':  # 如果找到 '5'
+                found5 = True
+        return n - found0  # 如果没有找到符合条件的字符对，返回删除所有字符的数量减去一个 '0' 的数量
 
 # 示例用法
 solution = Solution()
